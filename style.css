@@ -245,15 +245,24 @@ a:visited {
   font-size: 30px;
 }
 
-.warnings {
+.buttons--outside {
   display: flex;
-  padding: 2rem;
+  padding: 3rem;
+}
+
+.btn__big {
+  font-size: 45px;
 }
 
 .btn__remove-all ion-icon {
   color: #991511;
-  font-size: 40px;
 }
+
+.btn__time ion-icon,
+.btn__distance ion-icon {
+  color: #086828;
+}
+
 .warning {
   width: 100%;
   padding: 8px 0;
