@@ -276,41 +276,46 @@ class App {
     //get data from form
     const data = this._getFormData();
     if (!this.#mapEvent) {
+      console.log(this.#mapEvent);
       const workoutEl = e.target.nextElementSibling;
       this._editWorkout(workoutEl, data);
-      return;
-    }
-    const { lat, lng } = this.#mapEvent.latlng;
+      //this._renderWorkout(workoutEd);
+      workoutEl.remove();
+      //return;
+    } else {
+      const { lat, lng } = this.#mapEvent.latlng;
+      console.log(this.#mapEvent);
 
-    //check if data is valid and if so, create a workout object
+      //check if data is valid and if so, create a workout object
 
-    if (data.type === 'running') {
-      if (
-        !this._allValid(data.distance, data.duration, data.cadence) ||
-        !this._allPositive(data.distance, data.duration, data.cadence)
-      ) {
-        this._displayWarning();
-        return;
-      } else {
-        this._getWorkoutLocation(lat, lng).then(dataGeo => {
-          this._createObject(data, dataGeo, lat, lng);
-        });
-        this._removeWarning();
+      if (data.type === 'running') {
+        if (
+          !this._allValid(data.distance, data.duration, data.cadence) ||
+          !this._allPositive(data.distance, data.duration, data.cadence)
+        ) {
+          this._displayWarning();
+          return;
+        } else {
+          this._getWorkoutLocation(lat, lng).then(dataGeo => {
+            this._createObject(data, dataGeo, lat, lng);
+          });
+          this._removeWarning();
+        }
       }
-    }
 
-    if (data.type === 'cycling') {
-      if (
-        !this._allValid(data.distance, data.duration, data.elevation) ||
-        !this._allPositive(data.distance, data.duration)
-      ) {
-        this._displayWarning();
-        return;
-      } else {
-        this._getWorkoutLocation(lat, lng).then(dataGeo => {
-          this._createObject(data, dataGeo, lat, lng);
-        });
-        this._removeWarning();
+      if (data.type === 'cycling') {
+        if (
+          !this._allValid(data.distance, data.duration, data.elevation) ||
+          !this._allPositive(data.distance, data.duration)
+        ) {
+          this._displayWarning();
+          return;
+        } else {
+          this._getWorkoutLocation(lat, lng).then(dataGeo => {
+            this._createObject(data, dataGeo, lat, lng);
+          });
+          this._removeWarning();
+        }
       }
     }
   }
@@ -359,7 +364,7 @@ class App {
     workout.type = data.type;
     workout.distance = data.distance;
     workout.duration = data.duration;
-    workoutEl.remove();
+    this.#workouts[this.#workouts.indexOf(workout)] = workout;
     this._renderWorkout(workout);
     this._hideForm();
     this._setLocalStorage();
@@ -467,10 +472,8 @@ class App {
         this._setLocalStorage();
       }
     } else if (e.target.name === 'create-outline') {
-      console.log('edit');
       form.classList.remove('hidden');
       workoutEl.insertAdjacentElement('beforebegin', form);
-      //workoutEl.style.display = 'none';
       inputDistance.value = workout.distance;
       inputDuration.value = workout.duration;
       if (workout.type === 'running') inputCadence.value = workout.cadence;
